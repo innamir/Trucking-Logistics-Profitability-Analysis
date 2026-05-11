@@ -46,17 +46,30 @@
 
 ## Data Quality
 
-Перед побудовою KPI були перевірені:
+Перед побудовою KPI датасет був перевірений на повноту, унікальність ключів, коректність зв’язків між таблицями та відповідність бізнес-правилам trucking-компанії.
 
-- дублікати primary keys;
-- пропуски в критичних полях;
-- коректність зв’язків між таблицями;
-- відсутність поїздок під час простою вантажівок;
-- відповідність сезонних клієнтів періоду Jul-Sep;
-- відповідність цін заправок паливним контрактам;
-- використання обсягу паливних контрактів.
+Основні результати перевірок:
 
-Детальні SQL-перевірки: [`sql/01_data_quality_checks.sql`](sql/01_data_quality_checks.sql)
+| Check | Result | Status |
+|---|---:|---|
+| Duplicate primary keys | 0 | Passed |
+| Critical missing values | 0 | Passed |
+| Invalid foreign keys | 0 | Passed |
+| Trips during truck downtime | 0 | Passed |
+| Seasonal clients outside Jul-Sep | 0 | Passed |
+| Cargo-client mismatches | 0 | Passed |
+| Fuel price mismatches vs contract | 0 | Passed |
+| Fuel contract overuse | 0 | Passed |
+| Odometer decreases | 0 | Passed |
+| Cancelled trips | 32 | Reviewed |
+| Strict weight-band rate gaps | 701 | Reviewed |
+| Trips without client/date/distance rate | 0 | Passed |
+
+Strict weight-band rate gaps пов’язані з overweight local trips, де `cargo_tons_actual` перевищує верхній тарифний weight band. Для `revenue` calculation використовується ranked rate matching.
+
+Детальний підсумок: [`docs/02_data_quality_summary.md`](docs/02_data_quality_summary.md)  
+SQL-перевірки: [`sql/01_data_quality_checks.sql`](sql/01_data_quality_checks.sql)
+
 
 ## Dashboard
 
